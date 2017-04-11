@@ -4,6 +4,9 @@ Ein irssi bot, damit man den Zustand des Hackerspaces der über die SpaceAPI bek
 
 ## Installation:
 
+### Im Dateisystem des irssi Users:
+
+**via Bash:**
 ```bash
 
 cd ~/.irssi/
@@ -14,7 +17,10 @@ mkdir scripts/autojoin
 ln -s ~/.irssi/spaceapi-bot/spaceapibot.pl ~/.irssi/scripts/autojoin/spaceapibot.pl
 ```
 
-Und in irssi:
+**die Konfiguration anpassen**
+Die Datei ``example.token.ini`` in ``token.ini`` ändern und die Token anpassen.
+
+### In irssi:
 ```
 /script load spaceapibot.pl
 ```
