@@ -13,7 +13,9 @@
 #############################################
 use strict;                     # Good practice
 use warnings;                   # Good practice
+use feature 'say';
 use Irssi;                      # Für den Bot
+use Config::IniFiles;
 use vars qw($VERSION %IRSSI);
 $VERSION = "1.0";
 %IRSSI = (
@@ -38,6 +40,9 @@ our $url = "https://bodensee.space/cgi-bin/togglestate?";
 # programm
 our $user = getpwuid( $< );
 Irssi::signal_add 'message public', 'sig_message_public';
+# Konfigurationsdateien einlesen
+my $ini = Config::IniFiles->new( -file => "/home/$user/.irssi/spaceapi-bot/config/token.ini" ) or die;
+say $ini->val('vars', 'test');
 
 sub sig_message_public {
     my ($server, $msg, $nick, $nick_addr, $target) = @_;
