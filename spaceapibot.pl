@@ -17,15 +17,14 @@ use Irssi;                      # Für den Bot
 use Config::IniFiles;           # From CPAN
 use LWP::Simple;                # From CPAN
 use JSON qw( decode_json );     # From CPAN
-use Switch;
+use LWP::UserAgent;
 use vars qw($VERSION %IRSSI);
-$VERSION = "1.0";
 %IRSSI = (
     authors         => "L3D",
     contact         => 'l3d@see-base.de',
     name            => "spaceapi-bot",
     description     => "A irssi bot to change the status of hackerspaces in the spaceapi.",
-    version         => "0.1",
+    version         => "0.3",
     status			=> "alpha",
     license         => "GPL-3.0"
 );
@@ -37,7 +36,7 @@ our @open = ("$keyword[0] open|$keyword[1] open", "$keyword[2] open"); # to chan
 our @closed = ("$keyword[0] closed|$keyword[1] closed", "$keyword[2] closed"); # to change state to closed
 our @show = ("$keyword[0]|$keyword[1]", "$keyword[2]");
 # Global Parameters:
-our $url = "https://bodensee.space/cgi-bin/togglestate?";
+our $url = "https://bodensee.space/cgi-bin/togglestate?space=";
 
 
 # programm
@@ -62,7 +61,7 @@ sub sig_message_public {
                 my $answer = space("show", $keyword[$int+1]);
                 $server->command("msg $target Hey $nick, $answer");
             }
-            $int++;
+            $int = $int + 1;
         }
     }
     $server->command("/script load spaceapibot.pl");
@@ -78,17 +77,40 @@ sub space {
         push(@spaces, $ini->val('spaces', "space_$i"));
         push(@token, $ini->val('token', "space_$i"));
     }
-    for (my $i = 0; $i < $anz; $i++) {
-        if ($spaces[$i] eq $param2){
+    print "foo";
+    for (my $i = 0; $i < $anz+1; $i++) {
+       print "i = $i";
+        print "($spaces[$i] eq $param2)";
+       if ($spaces[$i] eq $param2){
             if ($parameter eq "open") {
                 my $link = "$url$spaces[$i]&token=$token[$i]&state=$parameter";
-                return "try to open";
+                my $ua = LWP::UserAgent->new;
+                my $req = HTTP::Request->new(GET => "$link");
+                my $json_txt = $ua->request($req)->as_string;
+                my $json_text = "{" . ( split /{/, $json_txt, 2 )[1];
+                my $json        = JSON->new->utf8; #force UTF8 Encoding
+                my $decoded = $json->decode( $json_text ); #decode nodes.json
+                return "Hackerspace $decoded->{'space'} changed changed to $decoded->{'change'}";
             }
             elsif ($parameter eq "closed") {
-                return "try to close";
+                my $link = "$url$spaces[$i]&token=$token[$i]&state=$parameter";
+                my $ua = LWP::UserAgent->new;
+                my $req = HTTP::Request->new(GET => "$link");
+                my $json_txt = $ua->request($req)->as_string;
+                my $json_text = "{" . ( split /{/, $json_txt, 2 )[1];
+                my $json        = JSON->new->utf8; #force UTF8 Encoding
+                my $decoded = $json->decode( $json_text ); #decode nodes.json
+                return "Hackerspace $$decoded->{'space'} changed changed to $decoded->{'change'}";
             }
             elsif ($parameter eq "show") {
-                return "try to show state";
+                my $link = "$url$spaces[$i]&state=$parameter";
+                my $ua = LWP::UserAgent->new;
+                my $req = HTTP::Request->new(GET => "$link");
+                my $json_txt = $ua->request($req)->as_string;
+                my $json_text = "{" . ( split /{/, $json_txt, 2 )[1];
+                my $json        = JSON->new->utf8; #force UTF8 Encoding
+                my $decoded = $json->decode( $json_text ); #decode nodes.json
+                return "Hackerspace $decoded->{'space'} is $decoded->{'status'}.";
             }
             else { return "Error: Ungueltige Parameteruebergabe"; }
         }
