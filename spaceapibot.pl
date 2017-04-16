@@ -90,7 +90,7 @@ sub space {
                 my $json_text = "{" . ( split /{/, $json_txt, 2 )[1];
                 my $json        = JSON->new->utf8; #force UTF8 Encoding
                 my $decoded = $json->decode( $json_text ); #decode nodes.json
-                return "Hackerspace $decoded->{'space'} changed changed to $decoded->{'status'}";
+                return "Hackerspace $decoded->{'space'} changed Status to $decoded->{'status'}";
             }
             elsif ($parameter eq "closed") {
                 my $link = "$url$spaces[$i]&token=$token[$i]&state=$parameter";
@@ -100,7 +100,7 @@ sub space {
                 my $json_text = "{" . ( split /{/, $json_txt, 2 )[1];
                 my $json        = JSON->new->utf8; #force UTF8 Encoding
                 my $decoded = $json->decode( $json_text ); #decode nodes.json
-                return "Hackerspace $decoded->{'space'} changed changed to $decoded->{'status'}";
+                return "Hackerspace $decoded->{'space'} changed Status to $decoded->{'status'}";
             }
             elsif ($parameter eq "show") {
                 my $link = "$url$spaces[$i]&state=$parameter";
