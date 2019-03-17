@@ -24,16 +24,16 @@ use vars qw($VERSION %IRSSI);
     contact         => 'l3d@see-base.de',
     name            => "spaceapi-bot",
     description     => "A irssi bot to change the status of hackerspaces in the spaceapi.",
-    version         => "0.3",
+    version         => "0.4",
     status			=> "alpha",
     license         => "GPL-3.0"
 );
 ## important global Variables:
 # For the IRC:
-our $main_channel = "see-base|ponyville"; #    Use '|' for multiple channels
-our @keyword = ("space", "see-base", "toolbox"); # First parameter is a for the default space!
-our @open = ("$keyword[0] open|$keyword[1] open", "$keyword[2] open"); # to change state to open
-our @closed = ("$keyword[0] closed|$keyword[1] closed", "$keyword[2] closed"); # to change state to closed
+our $main_channel = "see-base|ponyville|waffel"; #    Use '|' for multiple channels
+our @keyword = ("space", "see-base", "toolbox", "c3woc"); # First parameter is a for the default space!
+our @open = ("$keyword[0] open|$keyword[1] open", "$keyword[2] open", "$keyword[3] open"); # to change state to open
+our @closed = ("$keyword[0] closed|$keyword[1] closed", "$keyword[2] closed", "$keyword[3] closed"); # to change state to closed
 our @show = ("$keyword[0]|$keyword[1]", "$keyword[2]");
 # Global Parameters:
 our $url = "https://bodensee.space/cgi-bin/togglestate?space=";
